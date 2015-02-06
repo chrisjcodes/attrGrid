@@ -1,0 +1,125 @@
+/**********************
+
+--------ATTR GRID---------
+A CONFIGURABLE LESS GRID
+THAT USES DATA ATTRIBUTES
+RATHER THAN CLASSES AND IS
+BASED ON FIXED WIDTHS
+
+HTTP://CJTHEDIZZY.GITHUB.IO/
+
+************************/
+
+//GRID SETTINGS
+//SET THESE BEFORE YOU BEGIN WRITING YOUR MARKUP OR YOU'LL FUNK STUFF UP, DUDE.
+@maxGrid: 1080px;
+@desktopMax: 992px; // ADD BREAKPOINT
+@tabletMax: 959px;
+@mobileMax: 768px;
+@columns:16;
+@gutter: 10px;
+
+
+//GRID RESETS
+*,
+*:after,
+*:before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+img{
+    max-width: 100%
+}
+
+.clear{
+    clear:both;
+}
+
+
+//GENERATING LARGE DEVICE GRID
+
+[data-container]{
+    width:@maxGrid;
+    position: relative;
+    margin:0 auto;
+    zoom:1;/* For IE 6/7 (trigger hasLayout) */
+        &:before, &:after{
+            content:"";
+            display:table;
+    }
+        &:after{
+            clear:both;
+        }
+}
+
+[data-columns]{
+    float: left;
+    display: inline;
+    margin: 0px @gutter;
+    padding:0px;
+}
+
+[data-row]{ margin-bottom: @gutter*2; }
+[data-alpha]{ margin-left: 0; }
+[data-omega]{ margin-right: 0; }
+
+.generate-gridLarge(@columns);
+
+.generate-gridLarge(@n, @i: 1) when (@i =< @n) {
+  [data-columns="@{i}"] {
+    width: ((@maxGrid/@n)*@i)-(@gutter*2);
+  }  
+	.generate-gridLarge(@n, (@i + 1));
+}
+
+[data-columns='1-3']{ width:((@maxGrid/3)-(@gutter*2)); }
+[data-columns='2-3']{ width:((@maxGrid/3)*2-(@gutter*2)); }
+[data-columns='full']{ width: (@maxGrid)-(@gutter*2); }
+
+
+//GENERATING TABLET DEVICE GRID
+
+@media only screen and (max-width: @tabletMax) {
+	[data-container]{ width: @mobileMax; }
+	[data-columns]{ margin: 0px @gutter; }
+	[data-row]{ margin-bottom: 20px; }
+
+	[data-alpha]{ margin-left: 0; margin-right: @gutter; }
+	[data-omega]{ margin-right: 0; margin-left: @gutter; }
+	  
+	.generate-gridTablet(@columns);
+
+	.generate-gridTablet(@n, @i: 1) when (@i =< @n) {
+	  [data-columns="@{i}"] {
+	    width: ((@mobileMax/@n)*@i)-(@gutter*2);
+	  }  
+		.generate-gridTablet(@n, (@i + 1));
+	}
+
+	[data-columns='1-3']{ width:((@mobileMax/3)-(@gutter*2)); }
+	[data-columns='2-3']{ width:((@mobileMax/3)*2-(@gutter*2)); }
+	[data-columns='full']{ width: (@mobileMax)-(@gutter*2); }
+}
+
+
+//GENERATING MOBILE DEVICE GRID
+
+@media only screen and (max-width: @mobileMax){
+	
+	[data-columns]{ margin:0; }
+	.generate-gridMobile(@columns);
+
+	.generate-gridMobile(@n, @i: 1) when (@i =< @n) {
+	  [data-columns="@{i}"] {
+	    width: 300px;
+	  }  
+		.generate-gridMobile(@n, (@i + 1));
+	}
+	[data-container],
+	[data-columns='1-3'],
+	[data-columns='2-3'],
+	[data-columns='full']{ width: 300px }
+
+}
